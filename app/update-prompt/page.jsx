@@ -8,8 +8,10 @@ import { useSearchParams } from "next/navigation";
 const UpdatePrompt = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const promptId = searchParams?.get("id");
+  const promptId = searchParams?.get("id") || "default";
+
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true); // Loading state
   const [post, setPost] = useState({
     prompt: "",
     tag: "",
@@ -17,15 +19,22 @@ const UpdatePrompt = () => {
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
-      setPost({
-        prompt: data?.prompt,
-        tag: data?.tag,
-      });
+      setLoading(true); // Start loading
+      try {
+        const response = await fetch(`/api/prompt/${promptId}`);
+        const data = await response.json();
+        setPost({
+          prompt: data?.prompt,
+          tag: data?.tag,
+        });
+      } catch (error) {
+        console.error("Error fetching prompt details:", error);
+      } finally {
+        setLoading(false); // Stop loading after fetching
+      }
     };
 
-    promptId && getPromptDetails();
+    if (promptId) getPromptDetails();
   }, [promptId]);
 
   const updatePrompt = async (e) => {
@@ -33,6 +42,7 @@ const UpdatePrompt = () => {
     setSubmitting(true);
 
     if (!promptId) return alert("Missing Prompt Id");
+
     try {
       const res = await fetch(`/api/prompt/${promptId}`, {
         method: "PATCH",
@@ -47,11 +57,17 @@ const UpdatePrompt = () => {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      setSubmitting(false);
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>; // Render a loading state
+  }
+
   return (
-    <>
+    <div>
       <Form
         type="Edit"
         post={post}
@@ -59,7 +75,7 @@ const UpdatePrompt = () => {
         submitting={submitting}
         handleSubmit={updatePrompt}
       />
-    </>
+    </div>
   );
 };
 
