@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 const UpdatePrompt = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const promptId = searchParams.get("id");
+  const promptId = searchParams?.get("id");
   const [submitting, setSubmitting] = useState(false);
   const [post, setPost] = useState({
     prompt: "",
@@ -17,7 +17,7 @@ const UpdatePrompt = () => {
 
   useEffect(() => {
     const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
+      const response = await fetch(`/api/prom   pt/${promptId}`);
       const data = await response.json();
       setPost({
         prompt: data?.prompt,
