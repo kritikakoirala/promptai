@@ -42,7 +42,6 @@ const UpdatePrompt = () => {
         }),
       });
 
-      console.log(res);
       if (res?.ok) {
         router.push("/");
       }
