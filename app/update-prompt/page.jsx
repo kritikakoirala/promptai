@@ -4,6 +4,7 @@ import Form from "@components/Form";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 const UpdatePrompt = () => {
   const router = useRouter();
@@ -67,15 +68,17 @@ const UpdatePrompt = () => {
   }
 
   return (
-    <div>
-      <Form
-        type="Edit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={updatePrompt}
-      />
-    </div>
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Form
+          type="Edit"
+          post={post}
+          setPost={setPost}
+          submitting={submitting}
+          handleSubmit={updatePrompt}
+        />
+      </Suspense>
+    </>
   );
 };
 
